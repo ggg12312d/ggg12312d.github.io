@@ -182,11 +182,16 @@ def main():
     markdown_post = markdown_post.replace("[LINK_CARD_INSTA]", insta_card_html)
     markdown_post = markdown_post.replace("[PARKING_GUIDE]", parking_guide_html)
 
-    # 4. 파일 저장 (식당 이름 대신 포스팅 제목을 파일명으로 활용)
+    # 4. 파일 저장 (순번 P001, P002... 부여 및 식당 이름 대신 포스팅 제목을 파일명으로 활용)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     posts_dir = os.path.join(script_dir, "_posts")
     if not os.path.exists(posts_dir):
         os.makedirs(posts_dir)
+    
+    # 기존 포스트 개수 확인하여 다음 순번 결정
+    existing_posts = [f for f in os.listdir(posts_dir) if f.endswith(".md")]
+    next_num = len(existing_posts) + 1
+    post_id = f"P{next_num:03d}"
         
     date_str = datetime.datetime.now().strftime("%Y-%m-%d")
     
@@ -198,7 +203,8 @@ def main():
     # 공백을 대시로 변환
     safe_title = re.sub(r'[-\s]+', '-', clean_title)
     
-    filename = os.path.join(posts_dir, f"{date_str}-{safe_title}.md")
+    # 순번(P001)을 포함한 최종 파일명
+    filename = os.path.join(posts_dir, f"{date_str}-{post_id}-{safe_title}.md")
     
     with open(filename, "w", encoding="utf-8") as f:
         f.write(markdown_post)
