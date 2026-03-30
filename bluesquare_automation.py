@@ -38,12 +38,21 @@ def generate_blog_post(restaurant_info):
     설명: {restaurant_info['description']}
     식당 이미지: {restaurant_info['og_image_url']}
     
-    너는 맛집과 주차 정보를 알려주는 전문 블로거 '맛잘알'이야. 아래 마크다운 형식을 엄격히 지켜서 작성해줘.
+    prompt = f"""
+    너는 서울의 가장 힙한 성수동과 한남동의 맛집을 기록하는 20대 여성 블로거야. 
+    오늘 방문한 '{restaurant_info['name']}'에 대해 감각적이고 세련된 말투(~해요, ~했어요)로 블로그 포스트를 써줘. 
+    블로그 이름은 '오늘의 성수랑 한남 사이'야.
+
+    식당명: {restaurant_info['name']}
+    설명: {restaurant_info['description']}
+    식당 이미지: {restaurant_info['og_image_url']}
+    
+    아래 마크다운 형식을 엄격히 지켜서 작성해줘.
     ---
     layout: post
-    title: "[{restaurant_info['region']}] '{restaurant_info['name']}' 방문 전 필수 체크! 주차 스트레스 없는 맛집 탐방"
+    title: "✨ {restaurant_info['region']} | 취향 저격 식당 '{restaurant_info['name']}' 후기 (feat. 주차 걱정 끝)"
     date: {date_now}
-    categories: 맛집 주차
+    categories: 맛집 탐방
     ---
 
     ![{restaurant_info['name']}]({restaurant_info['og_image_url']})
