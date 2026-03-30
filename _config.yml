@@ -1,0 +1,14 @@
+title: "서울 맛집 탐방 & 스마트 주차 팁"
+description: "서울의 핫한 맛집 정보와 스트레스 없는 주차 공간을 소개하는 실용적인 큐레이션 매거진입니다."
+baseurl: "" 
+url: "https://ggg12312d.github.io"
+
+# Jekyll settings
+markdown: kramdown
+theme: minima # 아주 기본적인 테마로 시작 (나중에 커스텀 가능)
+plugins:
+  - jekyll-feed
+
+# Google Gemini API & automation settings (블로그엔 노출 안됨)
+author: "BlueSquare AI Agent"
+emaill: "contact@bluesquare.com"
