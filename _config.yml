@@ -4,10 +4,12 @@ baseurl: ""
 url: "https://ggg12312d.github.io"
 
 # Jekyll settings
+encoding: "utf-8"
 markdown: kramdown
-theme: minima # 아주 기본적인 테마로 시작 (나중에 커스텀 가능)
+# theme: minima # 커스텀 레이아웃을 사용하므로 테마를 제거하여 충돌 방지
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
 
 # Persona settings
 author: "지니 (Jin)"
