@@ -1,8 +1,13 @@
 import os
+import sys
 import datetime
 import requests
 from bs4 import BeautifulSoup
 import google.generativeai as genai
+
+# Windows 환경에서 특수문자(이모지 등) 출력을 위한 UTF-8 설정
+if sys.stdout.encoding.lower() != 'utf-8':
+    sys.stdout.reconfigure(encoding='utf-8')
 
 # [1. 데이터 수집 가이드]
 def scrape_catchtable_hotplaces(region="성수"):
