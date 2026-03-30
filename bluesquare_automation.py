@@ -26,8 +26,10 @@ def generate_blog_post(restaurant_info):
     """
     print(f"[{datetime.datetime.now().time()}] Gemini 1.5 Flash로 블로그 콘텐츠 생성 중...")
     
-    # GitHub Actions 환경변수 또는 직접 입력된 키 사용
-    api_key = os.environ.get("GEMINI_API_KEY", "AIzaSyC1pyObXol9oOd4juyHPH529KsN6VRotmw")
+    # 보안 강화: 소스코드 내 API 키 노출 전면 금지 (오직 환경변수만 사용)
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        raise ValueError("CRITICAL: GEMINI_API_KEY 환경변수가 설정되지 않았습니다. 보안을 위해 소스코드 내 하드코딩을 금지합니다.")
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel("models/gemini-1.5-flash")
     
