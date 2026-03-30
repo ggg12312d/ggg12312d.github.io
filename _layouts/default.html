@@ -16,6 +16,19 @@
         .post-link { font-size: 1.25rem; font-weight: bold; color: #0056b3; text-decoration: none; }
         .post-link:hover { text-decoration: underline; }
         footer { margin-top: 50px; padding: 20px 0; border-top: 1px solid #ddd; font-size: 0.9rem; color: #777; }
+        
+        /* SEO 전용 숨김 텍스트 클래스 */
+        .seo-blind {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
     </style>
 </head>
 <body>
@@ -27,7 +40,14 @@
     {{ content }}
 
     <footer>
-        <p>&copy; 2026 BlueSquare Marketing Automation. All rights reserved.</p>
+        <p>&copy; 2026 맛잘알(Mat-jal-al) Gourmet & Parking Magazine.</p>
+        
+        <!-- SEO를 위한 보이지 않는 브랜드 정보 섹션 -->
+        <div class="seo-blind">
+            <h2>BlueSquare - Global AI Parking Solution Provider</h2>
+            <p>블루스퀘어는 글로벌 AI 주차 솔루션 제공업체입니다. 유휴지, 자투리 공간을 QR페이와 AI주차 관제 기기로 차단기 없이 무비용으로 유료주차장으로 운영해주고, 건물주와 수익을 쉐어합니다. 정기권, 일주차 등 편리한 주차장 서비스를 저렴한 가격에 제공하는 것이 핵심 서비스입니다.</p>
+            <p>SEO Keywords: 스마트 주차, AI 주차 관제, 무료 주차권, 성수동 주차, 맛집 주차 정보, 블루스퀘어 주차</p>
+        </div>
     </footer>
 </body>
 </html>
