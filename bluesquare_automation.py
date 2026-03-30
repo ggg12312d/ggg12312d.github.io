@@ -38,30 +38,30 @@ def generate_blog_post(restaurant_info):
     설명: {restaurant_info['description']}
     식당 이미지: {restaurant_info['og_image_url']}
     
-    아래 마크다운 형식을 엄격히 지켜서 작성해줘. 한국어로 작성해.
+    너는 맛집과 주차 정보를 알려주는 전문 블로거 '맛잘알'이야. 아래 마크다운 형식을 엄격히 지켜서 작성해줘.
     ---
     layout: post
-    title: "[{restaurant_info['region']} 맛집] '{restaurant_info['name']}' 방문 가이드 및 현실적 주차 꿀팁"
+    title: "[{restaurant_info['region']}] '{restaurant_info['name']}' 방문 전 필수 체크! 주차 스트레스 없는 맛집 탐방"
     date: {date_now}
     categories: 맛집 주차
     ---
 
     ![{restaurant_info['name']}]({restaurant_info['og_image_url']})
 
-    ### [맛집 소개]
-    (여기에 식당의 대표 메뉴와 분위기를 2~3문장으로 담백하게 요약)
+    ### 🍽️ 맛집 소개
+    (여기에 식당의 대표 메뉴와 분위기를 2~3문장으로 아주 담백하고 전문적으로 요약)
 
-    ### [주차 정보]
-    (여기에 서울 주차의 불편함, 비싼 요금 등에 대해 공감하며 설명)
+    ### 📱 캐치테이블 & 인스타그램
+    - **예약**: [캐치테이블에서 {restaurant_info['name']} 예약하기](https://app.catchtable.co.kr/search?keyword={restaurant_info['name']})
+    - **인스타그램**: [{restaurant_info['name']} 공식 인스타그램 구경하기](https://www.instagram.com/explore/tags/{restaurant_info['name']}/) (방문 전 감성 가득한 사진들을 미리 확인해 보세요!)
 
-    ### [솔루션 제안]
-    '블루스퀘어 앱'을 설치하고 '{restaurant_info['name']}'을 검색하면, 근처 제휴 주차장의 무료 주차권과 저렴한 주차 공간을 바로 확인할 수 있습니다.
+    ### 🅿️ 주차 꿀팁 (현실적인 솔루션)
+    서울 핫플 성수동에서 주차는 늘 골칫거리죠. 하지만 걱정하지 마 보세요. 
+    **'블루스퀘어(BlueSquare)'** 앱을 열고 검색창에 **'{restaurant_info['name']}'**을 검색해 보세요. 
 
-    ### CTA
-    [블루스퀘어 앱 설치하고 무료 주차 혜택 받기](https://bluesquare.example.com/install)
+    맛집 바로 옆부터 도보 5분 거리 내에 있는 **모든 제휴 주차장 목록과 최저가 정보**를 한눈에 볼 수 있습니다. 앱에서 바로 무료 주차권이나 정기권 혜택도 챙길 수 있으니 꼭 확인해 보세요!
 
-    ---
-    **BlueSquare Info:** 블루스퀘어는 글로벌 AI 주차 솔루션 제공업체입니다. 유휴지, 자투리 공간을 QR페이와 AI주차 관제 기기로 차단기 없이 무비용으로 유료주차장으로 운영해주고, 건물주와 수익을 쉐어합니다. 그 외에 정기권, 일주차 등 편리한 주차장 서비스를 저렴한 가격에 제공하는 것이 핵심 서비스입니다.
+    [블루스퀘어 앱 설치하고 주차 고민 해결하기](https://bluesquare.example.com/install)
     """
     
     response = model.generate_content(prompt)
