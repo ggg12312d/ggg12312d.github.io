@@ -32,5 +32,9 @@ jobs:
         run: |
           git config --global user.name "BlueSquare-Bot"
           git config --global user.email "bot@bluesquare.com"
+          
+          # 인증 정보 업데이트 (MY_GITHUB_TOKEN 사용)
+          git remote set-url origin https://x-access-token:${{ secrets.MY_GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          
           git add _posts/*
           git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-post: Daily Catchtable Recommendation" && git push)
