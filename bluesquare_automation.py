@@ -82,13 +82,16 @@ def main():
     # 2. 콘텐츠 생성 단계 (Gemini)
     markdown_post = generate_blog_post(hotplace)
     
-    # 3. 파일 저장 (_posts 디렉토리)
-    if not os.path.exists("_posts"):
-        os.makedirs("_posts")
+    # 3. 파일 저장 (스크립트가 있는 폴더의 _posts 디렉토리)
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    posts_dir = os.path.join(script_dir, "_posts")
+    
+    if not os.path.exists(posts_dir):
+        os.makedirs(posts_dir)
         
     date_str = datetime.datetime.now().strftime("%Y-%m-%d")
     safe_name = hotplace['name'].replace(" ", "-")
-    filename = f"_posts/{date_str}-{safe_name}.md"
+    filename = os.path.join(posts_dir, f"{date_str}-{safe_name}.md")
     
     with open(filename, "w", encoding="utf-8") as f:
         f.write(markdown_post)
