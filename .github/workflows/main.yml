@@ -2,7 +2,7 @@ name: BlueSquare Daily Marketing Bot
 
 on:
   schedule:
-    - cron: '0 0 * * *' # 매일 자정(UTC) 실행
+    - cron: '0 0,6 * * *' # 매일 오전 9시, 오후 3시(KST) 자동 실행
   workflow_dispatch: # 수동 실행 가능
 
 jobs:
