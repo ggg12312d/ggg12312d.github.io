@@ -4,6 +4,10 @@ import datetime
 import requests
 from bs4 import BeautifulSoup
 import google.generativeai as genai
+import hmac
+import hashlib
+import time
+import json
 
 # Windows 환경에서 특수문자(이모지 등) 출력을 위한 UTF-8 설정
 if sys.stdout.encoding.lower() != 'utf-8':
@@ -33,26 +37,65 @@ def scrape_catchtable_hotplaces(region="성수"):
         "insta_search_url": "https://www.instagram.com/explore/tags/성수다락/"
     }
 
-# [2. 쿠팡 파트너스 로직]
-def generate_coupang_box(theme):
+# [2. 쿠팡 파트너스 실전 API 연동]
+def generate_coupang_deeplink(target_url):
     """
-    포스팅 테마에 맞는 쿠팡 파트너스 추천 박스 (API 연동 인터페이스 구성)
+    쿠팡 파트너스 API를 사용하여 수익 트래킹 딥링크 생성 (HMAC-SHA256 인증)
     """
-    # 실제 API 연동 시에는 여기서 실시간 조회를 수행합니다.
-    # 지금은 가장 높은 클릭율을 기록하는 테마별 상품 링크를 동적으로 생성합니다.
-    recommendations = {
-        "이탈리안/양식": ("집에서도 맛있는 파스타를?", "https://link.coupang.com/a/sample_pasta"),
-        "카페/디저트": ("홈카페의 완성! 프리미엄 원두", "https://link.coupang.com/a/sample_coffee"),
-        "한식/고기": ("레스토랑 퀄리티의 한우 세트", "https://link.coupang.com/a/sample_meat")
+    ACCESS_KEY = "6a4514a0-568b-47b9-a7b5-95a015ec1d4f"
+    SECRET_KEY = "7d1cebf107a83ed44720d17e504aca9a77563dd8"
+    
+    REQUEST_METHOD = "POST"
+    DOMAIN = "https://api-gateway.coupang.com"
+    URL = "/v2/providers/affiliate_open_api/apis/openapi/v1/deeplink"
+    
+    # HMAC 서명 생성
+    timestamp = time.strftime('%y%m%dT%H%M%SZ', time.gmtime())
+    message = timestamp + REQUEST_METHOD + URL
+    signature = hmac.new(SECRET_KEY.encode('utf-8'), message.encode('utf-8'), hashlib.sha256).hexdigest()
+    
+    authorization = f"CEA algorithm=HMAC-SHA256, access-key={ACCESS_KEY}, signed-timestamp={timestamp}, signature={signature}"
+    
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": authorization
     }
     
-    title, link = recommendations.get(theme, ("지니가 추천하는 꿀템 보러가기", "https://link.coupang.com/a/sample_default"))
+    payload = {
+        "coupangUrls": [target_url]
+    }
+    
+    try:
+        response = requests.post(DOMAIN + URL, headers=headers, data=json.dumps(payload))
+        if response.status_code == 200:
+            data = response.json()
+            return data['data'][0]['shortenUrl']
+    except Exception as e:
+        print(f"⚠️ 쿠팡 API 호출 실패: {e}")
+    
+    # 실패 시 기본 링크 반환
+    return "https://link.coupang.com/a/sample_default_profit"
+
+def generate_coupang_box(theme):
+    """
+    포스팅 테마에 맞는 쿠팡 파트너스 추천 박스 (실제 수익 링크 포함)
+    """
+    recommendations = {
+        "이탈리안/양식": ("집에서도 맛있는 파스타를?", "https://www.coupang.com/np/search?q=파스타키트"),
+        "카페/디저트": ("홈카페의 완성! 프리미엄 원두", "https://www.coupang.com/np/search?q=원두커피"),
+        "한식/고기": ("레스토랑 퀄리티의 한우 세트", "https://www.coupang.com/np/search?q=한우선물세트")
+    }
+    
+    title, raw_url = recommendations.get(theme, ("지니가 추천하는 꿀템 보러가기", "https://www.coupang.com"))
+    
+    # 실전 수익 링크로 변환
+    profit_link = generate_coupang_deeplink(raw_url)
     
     return f"""
-<div style="background: #FFF9F9; border: 1px solid #FFEDED; border-radius: 12px; padding: 20px; text-align: center; margin: 40px 0;">
+<div class="coupang-box" style="background: #FFF9F9; border: 1px solid #FFEDED; border-radius: 12px; padding: 20px; text-align: center; margin: 40px 0;">
     <p style="margin: 0; color: #FF4D4D; font-weight: 700; font-size: 0.9rem;">🎁 지니의 취향 추천</p>
     <h5 style="margin: 10px 0; font-size: 1.1rem; color: #333;">{title}</h5>
-    <a href="{link}" target="_blank" style="background: #333; color: white; text-decoration: none; padding: 10px 20px; border-radius: 25px; font-size: 0.9rem; font-weight: 600; display: inline-block; margin-top: 5px;">쿠팡에서 최저가 확인하기</a>
+    <a href="{profit_link}" target="_blank" style="background: #333; color: white; text-decoration: none; padding: 10px 20px; border-radius: 25px; font-size: 0.9rem; font-weight: 600; display: inline-block; margin-top: 5px;">쿠팡에서 최저가 확인하기</a>
     <p style="margin-top: 15px; font-size: 0.75rem; color: #999;">이 포스팅은 쿠팡 파트너스 활동의 일환으로, 이에 따른 일정액의 수수료를 제공받습니다.</p>
 </div>
 """
@@ -78,28 +121,18 @@ def generate_blog_post(info):
     너는 서울의 가장 트렌디한 곳을 다니며 기록하는 네이버 인기 블로거이자 인플루언서 '지니'야. 
     오늘 방문한 '{info['name']}'에 대해 정보력이 넘치면서도 세련된 말투(~해요, ~했어요)로 정말 친구에게 강추하는 블로그 포스트를 써줘. 
     
-    [핵심 마케팅 미션]
-    - 이 포스팅의 최종 목적은 독자들이 '블루스퀘어' 앱을 설치하게 만드는 거야.
-    - 골목 주차의 어려움을 생생하게 언급하며, 이를 완벽하게 해결해 주는 블루스퀘어 앱 설치를 '필수 조건'처럼 제안해.
+    [핵심 미션]
+    1. 인스타그램 사회적 증거(Social Proof) 강조: 
+       - 글 시작 부분에 "인스타그램 인기 피드 실시간 반응"을 인용하며 핫플임을 인증해.
+    2. 블루스퀘어 앱 설치 전환: 
+       - 주차 고민 해결책으로 블루스퀘어를 '필수'로 제안해.
+    3. 인컨텍스트 링크 카드: 
+       - 글 중간에 자연스럽게 "네이버 지도 길찾기"와 "인스타그램 핫피드" 링크 카드를 배치해. [LINK_CARD_NAVER], [LINK_CARD_INSTA] 마커를 사용해줘.
     
     [필수 포함 내용]
     - 제목: "{info['name']} 방문 후기 (+ {info['name']} 방문 주차 꿀팁)"
-    - 도입부: 이 식당을 찾아간 이유와 첫인상 (성수동 연무장길의 무드 포함)
-    - 🅿️ 주차 핵심 섹션: "성수동 주차? 이제 앱 하나면 끝!"이라는 소주제와 함께 
-      - 앱 다운로드 유도 세부 문구와 설치 링크 배치
-      - "App Store & Google Play에서 무료로 바로 받으세요!" 강조
-    - 공간/인테리어: 인테리어의 특징과 '인생샷' 스팟 추천
-    - 메뉴/맛: 시그니처 메뉴의 디테일한 맛 평가 (파스타의 농도, 재료의 신선함 등)
-    - 정보 섹션: 웨이팅 꿀팁이나 꼭 알아야 할 점 (캐치테이블 정보 등)
-    
-    [형식 지시 사항]
-    - 절대로 괄호() 나 대괄호[] 를 사용하지 마 (이미지/링크 문법 제외). 
-    - 중간중간 아래의 이미지 마커를 5개에 맞춰 배치해줘:
-      ![분위기]({info['images'][0]})
-      ![음식]({info['images'][1]})
-      ![외관]({info['images'][2]})
-      ![디테일]({info['images'][3]})
-      ![거리풍경]({info['images'][4]})
+    - 사진 5장 배치: ![분위기]({info['images'][0]}), ![음식]({info['images'][1]}), ![외관]({info['images'][2]}), ![디테일]({info['images'][3]}), ![거리풍경]({info['images'][4]})
+    - 🅿️ 주차 가이드 섹션: "블루스퀘어 주차는 도착해서 코드만 입력하면 끝!" 강조.
     
     아래 마크다운 형식을 엄격히 지켜줘.
     ---
@@ -112,16 +145,11 @@ def generate_blog_post(info):
     bluesquare_app_link: "{BLUESQUARE_APP_STORE_LINK}"
     ---
     
+    ![인스타그램 리얼 반응](/assets/images/bluesquare/insta_grid.png)
+    
     본문은 여기에... (여기에 쿠팡 광고 섹션을 중간 지점에 삽입해줘: {coupang_box})
     
-    ### 🅿️ 오늘 주차 고민, 블루스퀘어 앱으로 한 번에 끝냈어요!
-    성수동 나들이 갈 때 차 가져갈지 항상 고민이죠. 저도 매번 골목을 몇 바퀴씩 돌 생각에 망설였는데, 이번엔 **블루스퀘어** 덕분에 정말 스마트하게 다녀왔어요! 👗
-    
-    블루스퀘어는 우리 동네 골목 곳곳의 숨은 주차 공간을 찾아주는 앱인데, 정말 '스트레스 없는 주차의 시작'이더라고요. 
-    지금 바로 앱을 설치하고 **'{info['name']}'** 주변을 검색해 보세요. 목적지 바로 앞 유휴 주차 공간을 실시간으로 확인하고 1초 만에 주차 등록까지 끝낼 수 있답니다. 
-    
-    [주차 스트레스 해방: 블루스퀘어 앱 [무료] 다운로드 받기]({BLUESQUARE_APP_STORE_LINK})
-    *(지금 바로 App Store와 Google Play에서 만나보세요!)*
+    [주차 가이드 마커: PARKING_GUIDE]
     """
     
     response = model.generate_content(prompt)
@@ -136,7 +164,25 @@ def main():
     # 2. 콘텐츠 생성 (Gemini)
     markdown_post = generate_blog_post(info)
     
-    # 3. 파일 저장 (식당 이름 대신 포스팅 제목을 파일명으로 활용)
+    # 3. 렌더링 후 마커 치환 (Link Cards & Guide)
+    parking_guide_html = """
+<div class="parking-guide-container" style="background: #F8F9FA; border-radius: 12px; padding: 25px; margin: 40px 0; border: 1px solid #EEE;">
+    <h4 style="margin-top: 0; color: #333; display: flex; align-items: center;">🅿️ 블루스퀘어 주차 가이드</h4>
+    <p style="font-size: 0.95rem; color: #666; margin-bottom: 20px;">도착해서 주차장 코드만 입력하면 주차 끝! 정말 쉽죠? :)</p>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <img src="/assets/images/bluesquare/guide_map.png" style="width: 48%; border-radius: 8px; border: 1px solid #DDD;">
+        <img src="/assets/images/bluesquare/guide_input.png" style="width: 48%; border-radius: 8px; border: 1px solid #DDD;">
+    </div>
+</div>
+"""
+    naver_card_html = f'<div class="link-card naver-card"><a href="{info["naver_map_url"]}" target="_blank">📍 네이버 지도에서 위치 & 길찾기</a></div>'
+    insta_card_html = f'<div class="link-card insta-card"><a href="{info["insta_search_url"]}" target="_blank">📸 인스타그램에서 실시간 무드 확인</a></div>'
+    
+    markdown_post = markdown_post.replace("[LINK_CARD_NAVER]", naver_card_html)
+    markdown_post = markdown_post.replace("[LINK_CARD_INSTA]", insta_card_html)
+    markdown_post = markdown_post.replace("[PARKING_GUIDE]", parking_guide_html)
+
+    # 4. 파일 저장 (식당 이름 대신 포스팅 제목을 파일명으로 활용)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     posts_dir = os.path.join(script_dir, "_posts")
     if not os.path.exists(posts_dir):
