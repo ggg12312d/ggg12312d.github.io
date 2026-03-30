@@ -34,11 +34,6 @@ def generate_blog_post(restaurant_info):
     date_now = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S +0900")
     
     prompt = f"""
-    식당명: {restaurant_info['name']}
-    설명: {restaurant_info['description']}
-    식당 이미지: {restaurant_info['og_image_url']}
-    
-    prompt = f"""
     너는 서울의 가장 힙한 성수동과 한남동의 맛집을 기록하는 20대 여성 블로거야. 
     오늘 방문한 '{restaurant_info['name']}'에 대해 감각적이고 세련된 말투(~해요, ~했어요)로 블로그 포스트를 써줘. 
     블로그 이름은 '오늘의 성수랑 한남 사이'야.
@@ -57,20 +52,22 @@ def generate_blog_post(restaurant_info):
 
     ![{restaurant_info['name']}]({restaurant_info['og_image_url']})
 
-    ### 🍽️ 맛집 소개
-    (여기에 식당의 대표 메뉴와 분위기를 2~3문장으로 아주 담백하고 전문적으로 요약)
+    ### 🥂 오늘의 공간: {restaurant_info['name']}
+    드디어 가본 **{restaurant_info['name']}**! {restaurant_info['description']} 인테리어부터 분위기까지 제 마음에 쏙 들었어요. 소중한 사람과 함께라면 더 행복해질 수 있는 그런 공간이었답니다. ✨
 
-    ### 📱 캐치테이블 & 인스타그램
-    - **예약**: [캐치테이블에서 {restaurant_info['name']} 예약하기](https://app.catchtable.co.kr/search?keyword={restaurant_info['name']})
-    - **인스타그램**: [{restaurant_info['name']} 공식 인스타그램 구경하기](https://www.instagram.com/explore/tags/{restaurant_info['name']}/) (방문 전 감성 가득한 사진들을 미리 확인해 보세요!)
+    ### 📱 방문 전 필수 체크
+    여기 방문하실 분들은 미리 캐치테이블 예약이랑 인스타 확인하고 가시는 거 추천드려요! :)
+    - **Catch Table**: [간편하게 예약하기](https://app.catchtable.co.kr/search?keyword={restaurant_info['name']})
+    - **Instagram**: [무드 가득한 사진 미리보기](https://www.instagram.com/explore/tags/{restaurant_info['name']}/)
 
-    ### 🅿️ 주차 꿀팁 (현실적인 솔루션)
-    서울 핫플 성수동에서 주차는 늘 골칫거리죠. 하지만 걱정하지 마 보세요. 
-    **'블루스퀘어(BlueSquare)'** 앱을 열고 검색창에 **'{restaurant_info['name']}'**을 검색해 보세요. 
+    ### 🅿️ 주차 스트레스 없이 우아하게 즐기는 법!
+    성수랑 한남동 쪽은 주차 자리가 정말 귀하잖아요. :( 저도 주차 때문에 차를 가져갈지 말지 늘 망설였는데, 이번엔 **'블루스퀘어(BlueSquare)'** 앱 덕분에 진짜 편하게 해결했어요! 
 
-    맛집 바로 옆부터 도보 5분 거리 내에 있는 **모든 제휴 주차장 목록과 최저가 정보**를 한눈에 볼 수 있습니다. 앱에서 바로 무료 주차권이나 정기권 혜택도 챙길 수 있으니 꼭 확인해 보세요!
+    앱에서 **'{restaurant_info['name']}'**을 검색하면, 근처에 바로 주차할 수 있는 모든 제휴 주차장을 순식간에 알려줘요. 최저가 정보부터 무료 주차권 유무까지 한눈에 확인 가능하니까, 이제 주차 걱정은 그만하고 우아하게 음식만 즐기면 돼요! 👗
 
-    [블루스퀘어 앱 설치하고 주차 고민 해결하기](https://bluesquare.example.com/install)
+    [주차 걱정 지워주는 블루스퀘어 앱 바로가기](https://bluesquare.example.com/install)
+
+    주차 부담 없이 기분 좋은 시간 되시길 바랄게요! 다음에 또 예쁜 곳으로 찾아올게요. 안녕! 🤍
     """
     
     response = model.generate_content(prompt)
