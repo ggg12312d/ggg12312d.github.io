@@ -34,9 +34,13 @@ def generate_blog_post(restaurant_info):
     date_now = datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S +0900")
     
     prompt = f"""
-    너는 서울의 가장 힙한 성수동과 한남동의 맛집을 기록하는 20대 여성 블로거야. 
+    너는 서울의 가장 힙한 성수동과 한남동의 맛집을 기록하는 20대 여성 블로거 '지니'야. 
     오늘 방문한 '{restaurant_info['name']}'에 대해 감각적이고 세련된 말투(~해요, ~했어요)로 블로그 포스트를 써줘. 
-    블로그 이름은 '오늘의 성수랑 한남 사이'야.
+
+    [중요 지시 사항]
+    - 절대로 괄호() 나 대괄호[] 를 사용하지 마 (마크다운 링크나 이미지 문법 제외). 
+    - 괄호를 써야 할 상황이면 자연스럽게 문장으로 풀어서 쓰거나 이모지를 활용해.
+    - AI가 쓴 것처럼 딱딱하지 않게, 정말 친구한테 카톡이나 블로그로 말해주는 느낌이어야 해.
 
     식당명: {restaurant_info['name']}
     설명: {restaurant_info['description']}
@@ -45,7 +49,7 @@ def generate_blog_post(restaurant_info):
     아래 마크다운 형식을 엄격히 지켜서 작성해줘.
     ---
     layout: post
-    title: "✨ {restaurant_info['region']} | 취향 저격 식당 '{restaurant_info['name']}' 후기 (feat. 주차 걱정 끝)"
+    title: "✨ {restaurant_info['region']} | 취향 저격 식당 '{restaurant_info['name']}' 후기 ✨ 이제 주차 걱정은 끝!"
     date: {date_now}
     categories: 맛집 탐방
     ---
@@ -57,11 +61,11 @@ def generate_blog_post(restaurant_info):
 
     ### 📱 방문 전 필수 체크
     여기 방문하실 분들은 미리 캐치테이블 예약이랑 인스타 확인하고 가시는 거 추천드려요! :)
-    - **Catch Table**: [간편하게 예약하기](https://app.catchtable.co.kr/search?keyword={restaurant_info['name']})
-    - **Instagram**: [무드 가득한 사진 미리보기](https://www.instagram.com/explore/tags/{restaurant_info['name']}/)
+    - **Catch Table 예약**: https://app.catchtable.co.kr/search?keyword={restaurant_info['name']}
+    - **Instagram 무드 확인**: https://www.instagram.com/explore/tags/{restaurant_info['name']}/
 
     ### 🅿️ 주차 스트레스 없이 우아하게 즐기는 법!
-    성수랑 한남동 쪽은 주차 자리가 정말 귀하잖아요. :( 저도 주차 때문에 차를 가져갈지 말지 늘 망설였는데, 이번엔 **블루스퀘어**라는 앱 덕분에 진짜 편하게 해결했어요! 
+    성수랑 한남동 쪽은 주차 자리가 정말 귀하잖아요. 저도 주차 때문에 차를 가져갈지 말지 늘 망설였는데, 이번엔 **블루스퀘어**라는 앱 덕분에 진짜 편하게 해결했어요! 
 
     앱에서 **'{restaurant_info['name']}'**을 검색하면, 근처에 바로 주차할 수 있는 모든 제휴 주차장을 순식간에 알려줘요. 최저가 정보부터 무료 주차권 유무까지 한눈에 확인 가능하니까, 이제 주차 걱정은 그만하고 우아하게 음식만 즐기면 돼요! 👗
 
