@@ -136,15 +136,23 @@ def main():
     # 2. 콘텐츠 생성 (Gemini)
     markdown_post = generate_blog_post(info)
     
-    # 3. 파일 저장
+    # 3. 파일 저장 (식당 이름 대신 포스팅 제목을 파일명으로 활용)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     posts_dir = os.path.join(script_dir, "_posts")
     if not os.path.exists(posts_dir):
         os.makedirs(posts_dir)
         
     date_str = datetime.datetime.now().strftime("%Y-%m-%d")
-    safe_name = info['name'].replace(" ", "-")
-    filename = os.path.join(posts_dir, f"{date_str}-{safe_name}.md")
+    
+    # 제목에서 특수문자 제거 및 공백을 대시(-)로 변환하여 안전한 파일명 생성
+    title_raw = f"{info['name']} 방문 후기 (+ {info['name']} 방문 주차 꿀팁)"
+    import re
+    # 한글, 영문, 숫자만 남기고 나머지는 제거
+    clean_title = re.sub(r'[^\w\s-]', '', title_raw).strip()
+    # 공백을 대시로 변환
+    safe_title = re.sub(r'[-\s]+', '-', clean_title)
+    
+    filename = os.path.join(posts_dir, f"{date_str}-{safe_title}.md")
     
     with open(filename, "w", encoding="utf-8") as f:
         f.write(markdown_post)
