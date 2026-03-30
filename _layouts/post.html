@@ -57,8 +57,11 @@
   </div>
 
   <div class="action-section">
-    <h4>📍 방문 전 필수 체크: 지도 & 트렌드</h4>
+    <h4>📍 방문 전 필수 체크: 주차 & 트렌드</h4>
     <div class="btn-group">
+      {% if page.bluesquare_app_link %}
+      <a href="{{ page.bluesquare_app_link }}" target="_blank" class="btn-action btn-insta" style="background: #333; flex: 1 1 100%; margin-bottom: 12px; padding: 18px; font-size: 1.1rem;">블루스퀘어 앱 [무료] 다운로드</a>
+      {% endif %}
       {% if page.naver_map_url %}
       <a href="{{ page.naver_map_url }}" target="_blank" class="btn-action btn-naver">네이버 지도 길찾기</a>
       {% endif %}
