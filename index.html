@@ -1,0 +1,14 @@
+---
+layout: default
+title: "블루스퀘어 공식 블로그"
+---
+
+<ul class="post-list">
+    {% for post in site.posts %}
+    <li class="post-item">
+        <span class="post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
+        <h2><a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h2>
+        <p>{{ post.excerpt | strip_html | truncatewords: 20 }}</p>
+    </li>
+    {% endfor %}
+</ul>
