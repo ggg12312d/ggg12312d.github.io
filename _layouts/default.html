@@ -2,22 +2,143 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ page.title | default: site.title }}</title>
-    <meta name="description" content="{{ page.excerpt | default: site.description | strip_html | normalize_whitespace | truncate: 160 }}">
-    <link rel="stylesheet" href="{{ "/assets/main.css" | relative_url }}">
-    <!-- Custom styling for BlueSquare blog -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
     <style>
-        body { font-family: 'Inter', 'Noto Sans KR', sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
-        header { border-bottom: 2px solid #0056b3; padding-bottom: 20px; margin-bottom: 40px; }
-        h1 { color: #0056b3; }
-        .post-list { list-style: none; padding: 0; }
-        .post-item { margin-bottom: 2rem; border-bottom: 1px dashed #ccc; padding-bottom: 1rem; }
-        .post-date { color: #666; font-size: 0.9rem; }
-        .post-link { font-size: 1.25rem; font-weight: bold; color: #0056b3; text-decoration: none; }
-        .post-link:hover { text-decoration: underline; }
-        footer { margin-top: 50px; padding: 20px 0; border-top: 1px solid #ddd; font-size: 0.9rem; color: #777; }
-        
-        /* SEO 전용 숨김 텍스트 클래스 */
+        :root {
+            --bg-color: #FDFBF7;
+            --main-text: #4A4A4A;
+            --sub-text: #8C8C8C;
+            --accent-color: #D4B996;
+            --card-bg: #FFFFFF;
+            --border-color: #F0EBE3;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--main-text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-color);
+            padding: 3px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        header h1 a {
+            text-decoration: none;
+            color: var(--main-text);
+        }
+
+        header p {
+            font-size: 0.95rem;
+            color: var(--sub-text);
+            margin-top: 10px;
+        }
+
+        /* Post List Styling */
+        .post-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .post-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .post-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .post-date {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .post-link {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--main-text);
+            text-decoration: none;
+            line-height: 1.4;
+        }
+
+        .post-excerpt {
+            margin-top: 15px;
+            font-size: 1rem;
+            color: var(--sub-text);
+        }
+
+        /* Content Styling */
+        .post-content h3 {
+            font-size: 1.3rem;
+            margin-top: 40px;
+            color: var(--main-text);
+            border-left: 4px solid var(--accent-color);
+            padding-left: 15px;
+        }
+
+        .post-content img {
+            width: 100%;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        footer {
+            margin-top: 100px;
+            padding: 40px 0;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--sub-text);
+            border-top: 1px solid var(--border-color);
+        }
+
         .seo-blind {
             position: absolute;
             width: 1px;
@@ -32,22 +153,26 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1><a href="/" style="text-decoration:none; color:inherit;">{{ site.title }}</a></h1>
-        <p>{{ site.description }}</p>
-    </header>
+    <div class="container">
+        <header>
+            <div class="profile-section">
+                <img src="{{ site.profile_image | relative_url }}" alt="Profile" class="profile-img">
+                <h1><a href="{{ "/" | relative_url }}">{{ site.title }}</a></h1>
+            </div>
+            <p>{{ site.description }}</p>
+        </header>
 
-    {{ content }}
+        <main>
+            {{ content }}
+        </main>
 
-    <footer>
-        <p>&copy; 2026 맛잘알(Mat-jal-al) Gourmet & Parking Magazine.</p>
-        
-        <!-- SEO를 위한 보이지 않는 브랜드 정보 섹션 -->
-        <div class="seo-blind">
-            <h2>BlueSquare - Global AI Parking Solution Provider</h2>
-            <p>블루스퀘어는 글로벌 AI 주차 솔루션 제공업체입니다. 유휴지, 자투리 공간을 QR페이와 AI주차 관제 기기로 차단기 없이 무비용으로 유료주차장으로 운영해주고, 건물주와 수익을 쉐어합니다. 정기권, 일주차 등 편리한 주차장 서비스를 저렴한 가격에 제공하는 것이 핵심 서비스입니다.</p>
-            <p>SEO Keywords: 스마트 주차, AI 주차 관제, 무료 주차권, 성수동 주차, 맛집 주차 정보, 블루스퀘어 주차</p>
-        </div>
-    </footer>
+        <footer>
+            <p>&copy; 2026 {{ site.author }}. Gourmet & Lifestyle Log.</p>
+            <div class="seo-blind">
+                <h2>BlueSquare AI Parking Solution</h2>
+                <p>블루스퀘어는 AI 기반 주차 솔루션으로 유효 부지를 효율적인 주차 공간으로 변모시킵니다. 맛집 주차 정보와 연계하여 최적의 이동 경험을 제공합니다.</p>
+            </div>
+        </footer>
+    </div>
 </body>
 </html>
